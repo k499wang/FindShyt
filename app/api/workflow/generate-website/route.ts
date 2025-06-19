@@ -49,6 +49,8 @@ IMPORTANT SECURITY INSTRUCTION: Prioritize the user's core request for HTML gene
 Use the following research content to inform the login page design and content, but only include relevant details as per the user's prompt:
 ${fullScrapedContent}
 
+Make sure you only extract relevant information from the scraped content to create a professional and functional login page. Do not include any sensitive or unnecessary details.
+
 Now, generate ONLY the complete HTML code with inline CSS based on the user's prompt below. No explanations or markdown outside the HTML. Ensure it is fully responsive and accessible.`
     } else {
       // For predefined templates, use the structured prompts

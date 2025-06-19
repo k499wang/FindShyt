@@ -70,7 +70,7 @@ export function ScrapingStatus({ scrapeStatuses, isActive }: ScrapingStatusProps
         {scrapingCount > 0 && (
           <p className="text-sm text-blue-600 flex items-center gap-2">
             <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
-            Scraping {scrapingCount} websites simultaneously using BrightData API...
+            Scraping {scrapingCount} websites simultaneously ...
           </p>
         )}
       </CardHeader>
@@ -98,7 +98,7 @@ export function ScrapingStatus({ scrapeStatuses, isActive }: ScrapingStatusProps
                       <div className="mt-2">
                         <div className="flex items-center gap-2 text-xs text-blue-600">
                           <div className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></div>
-                          Processing with BrightData API...
+                          Processing...
                         </div>
                       </div>
                     )}

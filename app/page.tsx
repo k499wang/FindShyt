@@ -234,9 +234,9 @@ export default function AIResearchBot() {
   const [usageError, setUsageError] = useState<string>("")
 
   // Email and website configuration state
-  const [selectedEmailSubject, setSelectedEmailSubject] = useState<string>("collaboration") // Default to new subject
-  const [selectedEmailStyle, setSelectedEmailStyle] = useState<string>("professional")
-  const [selectedWebsiteStyle, setSelectedWebsiteStyle] = useState<string>("google-login") // Default to new style
+  const [selectedEmailSubject, setSelectedEmailSubject] = useState<string>() // Default to new subject
+  const [selectedEmailStyle, setSelectedEmailStyle] = useState<string>()
+  const [selectedWebsiteStyle, setSelectedWebsiteStyle] = useState<string>() // Default to new style
 
   // Link selection state
   const [searchResults, setSearchResults] = useState<any>(null)
@@ -755,7 +755,7 @@ export default function AIResearchBot() {
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <Search className="w-5 h-5" />
-                AI Research Bot - Powered by OpenAI
+                PhindShyt
               </CardTitle>
               <div className="flex items-center gap-4">
                 <span className="text-sm text-gray-600">Welcome, {user.email}</span>
@@ -794,8 +794,7 @@ export default function AIResearchBot() {
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  This bot uses OpenAI GPT-4 to generate personalized websites and emails based on your research. Make
-                  sure your OpenAI API key is configured.
+                  This bot uses OpenAI GPT-4 and is on a free plan, so it has a limit of 5 research queries per month.
                 </AlertDescription>
               </Alert>
             </CardHeader>

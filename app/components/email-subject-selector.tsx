@@ -295,7 +295,6 @@ export function EmailSubjectSelector({
               <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <p className="text-sm font-medium text-blue-900">Custom Style Source:</p>
                 <p className="text-sm text-blue-700 break-all">{customUrl}</p>
-                <p className="text-xs text-blue-600 mt-1">{customStyleData}</p>
                 <Button variant="outline" size="sm" onClick={() => setShowUrlModal(true)} className="mt-2">
                   Change URL
                 </Button>

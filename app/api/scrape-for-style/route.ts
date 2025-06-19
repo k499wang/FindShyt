@@ -9,11 +9,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'URL is required' }, { status: 400 })
     }
 
-
     const analysis = await getStyleAnalysisWithPuppeteer(url)
-
     console.log('Style analysis result:', analysis)
-
     return NextResponse.json(analysis)
   } catch (error) {
     console.error('Style scraping error:', error)
@@ -26,84 +23,69 @@ async function getStyleAnalysisWithPuppeteer(pageUrl: string) {
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   })
   const page = await browser.newPage()
-
-  // Set a reasonable viewport or user-agent if needed
   await page.setViewport({ width: 1280, height: 800 })
   await page.goto(pageUrl, { waitUntil: 'networkidle2', timeout: 30000 })
 
-  // Evaluate computed styles in the page context
   const result = await page.evaluate(() => {
-    // Helper to get computed style properties
-    const getStyles = (el: Element | null, props: string[]) => {
-      if (!el) return {}
-      const styles = window.getComputedStyle(el)
-      return props.reduce((acc, prop) => {
-        acc[prop] = styles.getPropertyValue(prop)
-        return acc
-      }, {} as Record<string, string>)
+    // helper to read a single computed style property
+    const getProp = (el: Element | null, prop: string) =>
+      el ? window.getComputedStyle(el).getPropertyValue(prop) : ''
+
+    // extract text-color from headers and paragraphs
+    const headerTags = ['h1', 'h2', 'p']
+    const textColors: Record<string, string> = {}
+    headerTags.forEach(tag => {
+      const el = document.querySelector(tag)
+      textColors[tag] = getProp(el, 'color')
+    })
+
+    // extract button styles
+    const btn = document.querySelector('button')
+    const buttonStyles = {
+      backgroundColor: getProp(btn, 'background-color'),
+      color:           getProp(btn, 'color'),
+      borderRadius:    getProp(btn, 'border-radius'),
+      padding:         getProp(btn, 'padding'),
+      fontWeight:      getProp(btn, 'font-weight'),
     }
 
-    // Extract styles from elements you care about
-    const bodyStyles = getStyles(document.querySelector('body'), [
-      'background-color',
-      'color',
-      'font-family'
-    ])
-
-    // Find first <button> or default to body
-    const button = document.querySelector('button')
-    const buttonStyles = getStyles(button, [
-      'background-color',
-      'color',
-      'border-radius',
-      'padding',
-      'font-weight'
-    ])
-
-    // Find first <form> or fallback
+    // extract form border for border in color schema
     const form = document.querySelector('form')
-    const formStyles = getStyles(form, [
-      'border',
-      'border-radius',
-      'padding',
-      'background-color'
-    ])
+    const formBorder = getProp(form, 'border')
 
-    const layout = document.querySelector('form')
-      ? window.getComputedStyle(form!).getPropertyValue('margin')
-        .includes('auto')
+    // determine layout (very basic)
+    const layout = form
+      ? window.getComputedStyle(form!).getPropertyValue('margin').includes('auto')
         ? 'centered'
         : 'left-aligned-card'
       : 'centered'
 
     return {
+      url: window.location.href,
       title: document.title || window.location.hostname,
       colors: {
-        primary: buttonStyles['background-color'] || bodyStyles['background-color'],
-        secondary: buttonStyles['color'] || bodyStyles['color'],
-        background: bodyStyles['background-color'],
-        text: bodyStyles['color'],
-        border: formStyles['border'] || buttonStyles['border'] || 'none'
+        primary:   buttonStyles.backgroundColor,
+        secondary: buttonStyles.color,
+        background: getProp(document.querySelector('body'), 'background-color'),
+        text:      textColors.p,
+        border:    formBorder || buttonStyles.borderRadius || 'none'
       },
       fonts: {
-        primary: bodyStyles['font-family'],
-        secondary: buttonStyles['font-family'] || bodyStyles['font-family']
+        primary:   getProp(document.querySelector('body'), 'font-family'),
+        secondary: getProp(btn, 'font-family')
       },
       layout,
-      buttonStyles: {
-        borderRadius: buttonStyles['border-radius'],
-        padding: buttonStyles['padding'],
-        fontWeight: buttonStyles['font-weight']
-      },
+      textColors,     // { h1: "...", h2: "...", p: "..." }
+      buttonStyles,   // { backgroundColor, color, borderRadius, padding, fontWeight }
       formStyles: {
-        border: formStyles['border'],
-        borderRadius: formStyles['border-radius'],
-        padding: formStyles['padding']
+        border:      formBorder,
+        borderRadius: getProp(form, 'border-radius'),
+        padding:      getProp(form, 'padding')
       },
       scrapedAt: new Date().toISOString()
     }
   })
 
   await browser.close()
-  return { url: pageUrl, ...result }
+  return result
 }

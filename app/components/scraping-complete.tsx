@@ -106,27 +106,13 @@ export function ScrapingComplete({ scrapedContent, onContinue, onBack }: Scrapin
                 {successfulScrapes.map((data, index) => (
                   <div key={index} className="mb-4 last:mb-0">
                     <div className="flex items-center gap-2 mb-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          const newExpanded = new Set(expandedPreviews)
-                          if (expandedPreviews.has(index)) {
-                            newExpanded.delete(index)
-                          } else {
-                            newExpanded.add(index)
-                          }
-                          setExpandedPreviews(newExpanded)
-                        }}
-                        className="h-auto p-0 font-medium text-left flex items-center gap-2"
-                      >
+
                         {expandedPreviews.has(index) ? (
                           <ChevronDown className="w-4 h-4" />
                         ) : (
                           <ChevronRight className="w-4 h-4" />
                         )}
                         {data.title}
-                      </Button>
                       <Badge variant="secondary" className="text-xs">
                         {data.metadata.wordCount} words
                       </Badge>
