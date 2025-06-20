@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { CheckCircle, XCircle, Clock, Globe, Zap } from "lucide-react"
 import { ProgressBar } from "./progress-bar"
 import { LoadingSpinner } from "./loading-spinner"
+import { Warning } from "postcss"
 
 interface ScrapeStatus {
   url: string
@@ -65,6 +66,12 @@ export function ScrapingStatus({ scrapeStatuses, isActive }: ScrapingStatusProps
             <Zap className="w-3 h-3" />
             {scrapingCount > 0 ? `${scrapingCount} active` : `${completedCount}/${totalCount} completed`}
           </Badge>
+
+          <Badge variant="secondary" className="ml-2">
+            WARNING: Please do not exit the app while scraping is in progress.
+          </Badge>
+         
+            
           {errorCount > 0 && <Badge variant="destructive">{errorCount} errors</Badge>}
         </CardTitle>
         {scrapingCount > 0 && (
